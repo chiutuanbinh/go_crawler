@@ -1,0 +1,5 @@
+crawler
+.env
+/vietnamet_cache/*
+/vietnamplus_cache/*
+/vnexpress_cache/*
