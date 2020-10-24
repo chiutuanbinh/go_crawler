@@ -1,9 +1,9 @@
 package main
 
 import (
+	"binhct/common/xtype"
 	"crawler/mongodb"
 	"crawler/util"
-	"crawler/xtype"
 	"encoding/json"
 	"html"
 	"log"
