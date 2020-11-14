@@ -1,7 +1,7 @@
 package mongodb
 
 import (
-	"crawler/xtype"
+	"binhct/common/xtype"
 	"log"
 
 	"context"

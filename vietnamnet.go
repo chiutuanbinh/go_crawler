@@ -28,10 +28,10 @@ func vietnamnetCrawler(wg *sync.WaitGroup) {
 	c.OnHTML("a[href]", func(e *colly.HTMLElement) {
 		link := e.Attr("href")
 		// Print link
-		// log.Printf("Link found: %q -> %s\n", e.Text, e.Request.AbsoluteURL(link))
+		// log.Printf("Link found: %q -> %s\n", e.Text, link)
 		// Visit link found on page
 		// Only those links are visited which are in AllowedDomains
-		if strings.HasSuffix(link, "html") {
+		if strings.Contains(link, "html") {
 			e.Request.Visit(e.Request.AbsoluteURL(link))
 		}
 
@@ -45,12 +45,13 @@ func vietnamnetCrawler(wg *sync.WaitGroup) {
 		article := &xtype.Article{}
 		content := html.UnescapeString(e.ChildText("p"))
 		title := e.DOM.ParentsUntil("html").Parent().ChildrenFiltered("head").ChildrenFiltered("title").Text()
-		x := e.DOM.ParentsUntil("html").Parent().ChildrenFiltered("head").ChildrenFiltered("script[type=application/ld+json]")
+		x := e.DOM.ParentsUntil("html").Parent().ChildrenFiltered("head").ChildrenFiltered("script[type='application/ld+json']")
 		x.Each(func(index int, item *goquery.Selection) {
 			var dat map[string]interface{}
 			json.Unmarshal([]byte(item.Text()), &dat)
 
 			val, ok := dat["datePublished"]
+			// log.Printf("tims %v %v\n", val, ok)
 			if !ok {
 				return
 			}
@@ -61,12 +62,12 @@ func vietnamnetCrawler(wg *sync.WaitGroup) {
 			} else {
 				publishTs = t.Unix()
 			}
+
 			article.Meta.PublishTs = uint64(publishTs)
 
 		})
 		article.Title = title
 		article.URI = e.Request.URL.String()
-		// article.Meta.PublishTs = uint64(publishTs)
 		article.Content.Parts = make([]interface{}, 0)
 		for _, p := range strings.Split(content, "\n") {
 			paragraph := xtype.Paragraph{}

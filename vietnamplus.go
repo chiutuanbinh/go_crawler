@@ -39,9 +39,9 @@ func vietnamplusCrawler(wg *sync.WaitGroup) {
 	})
 
 	c.OnHTML(".cms-body", func(e *colly.HTMLElement) {
-		if mongodb.Exist(e.Request.URL.String()) {
-			return
-		}
+		// if mongodb.Exist(e.Request.URL.String()) {
+		// 	return
+		// }
 		log.Printf("article found %v\n", e.Request.URL)
 		article := &xtype.Article{}
 		content := html.UnescapeString(e.ChildText("p"))
@@ -59,7 +59,7 @@ func vietnamplusCrawler(wg *sync.WaitGroup) {
 				return
 			}
 			t, err := time.Parse(time.RFC3339, val.(string))
-
+			// log.Printf("tims %v %v\n", val, ok)
 			var publishTs int64
 			if err != nil {
 				publishTs = 0
@@ -89,12 +89,12 @@ func vietnamplusCrawler(wg *sync.WaitGroup) {
 			if mongodb.Exist(job.URI) {
 				continue
 			}
-			mongodb.Add(job.ID, job)
+			// mongodb.Add(job.ID, job)
 		}
 	}()
 
 	c.Visit("https://www.vietnamplus.vn")
-	log.Printf("TAH FUK")
+	// log.Printf("TAH FUK")
 	// c.Visit("https://vietnamnet.vn/vn/giai-tri/the-gioi-sao/sao-viet-3-9-tuoi-38-khanh-thi-nong-bong-ben-chong-tre-va-hai-con-671118.html")
 
 }
